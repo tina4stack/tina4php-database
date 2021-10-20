@@ -58,28 +58,60 @@ class SQL implements \JsonSerializable
      */
     public $havings;
 
-
+    /**
+     * @var array Order bys
+     */
     public $orderBys;
 
+    /**
+     * @var string Variable to store join vars
+     */
     public $nextAnd = "join";
 
+    /**
+     * @var int Limit of how many records to select
+     */
     public $limit;
 
+    /**
+     * @var int offset from where to select from
+     */
     public $offset;
 
+    /**
+     * @var array Link to ORM object for one to one reference
+     */
     public $hasOne;
 
+    /**
+     * @var array Link to one to many ORM record
+     */
     public $hasMany;
 
+    /**
+     * @var int Amount of records returned
+     */
     public $noOfRecords;
 
+    /**
+     * @var string last error that happened
+     */
     public $error;
 
+    /**
+     * @var string the last sql that was executed
+     */
     public $lastSQL;
 
+    /**
+     * @var array List of fields to exclude in the request
+     */
     public $excludeFields;
 
-    public $filterMethod = []; //Special variable pointing to an anonymous function which takes in a record for manipulation
+    /**
+     * @var array Array of filters / functions to filter / transform the data
+     */
+    public $filterMethods = []; //Special variable pointing to an anonymous function which takes in a record for manipulation
 
     /**
      * SQL constructor.
@@ -308,7 +340,7 @@ class SQL implements \JsonSerializable
     final public function filter($filterMethod): SQL
     {
         if (!empty($filterMethod)) {
-            $this->filterMethod[] = $filterMethod;
+            $this->filterMethods[] = $filterMethod;
         }
 
         return $this;
@@ -379,8 +411,8 @@ class SQL implements \JsonSerializable
 
 
                         //Apply a filter to the record
-                        if (!empty($this->filterMethod)) {
-                            foreach ($this->filterMethod as $fid => $filterMethod) {
+                        if (!empty($this->filterMethods)) {
+                            foreach ($this->filterMethods as $fid => $filterMethod) {
                                 call_user_func($filterMethod, $newRecord);
                             }
                         }
