@@ -17,33 +17,47 @@ class SQL implements \JsonSerializable
      * @var resource Database connection handle
      */
     public $DBA;
+
     /**
      * @var ORM A Tina4 ORM object
      */
     public $ORM;
+
     /**
      * @var array Array of fields
      */
     public $fields;
+
     /**
      * @var array Array of result fields
      */
     public $resultFields;
+
     /**
      * @var string Name of the table selecting from
      */
     public $tableName;
+
     /**
      * @var array Join
      */
     public $join;
 
-
+    /**
+     * @var array Filters
+     */
     public $filters;
 
+    /**
+     * @var array GroupBys
+     */
     public $groupBys;
 
+    /**
+     * @var array Having clause
+     */
     public $havings;
+
 
     public $orderBys;
 

@@ -4,7 +4,7 @@
   "license": "MIT",
   "autoload": {
     "files": [
-      "Tina4/DataBase.php.php",
+      "Tina4/DataBase.php",
       "Tina4/DataBaseCore.php",
       "Tina4/DataError.php",
       "Tina4/DataField.php",
@@ -33,5 +33,9 @@
   },
   "config": {
     "process-timeout": 0
+  },
+  "require": {
+    "ext-json": "*",
+    "tina4stack/tina4php-debug": "^2.0"
   }
 }
