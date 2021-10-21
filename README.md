@@ -1,5 +1,5 @@
 # Readme
-## Tina4 Php Debug
+## Tina4 Php Database Core
 
 The Core Database Module for Tina4
 
