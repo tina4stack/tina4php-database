@@ -4,6 +4,7 @@
   "license": "MIT",
   "autoload": {
     "files": [
+      "Tina4/constants.php",
       "Tina4/DataBase.php",
       "Tina4/DataBaseCore.php",
       "Tina4/DataError.php",
