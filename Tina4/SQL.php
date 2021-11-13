@@ -116,17 +116,22 @@ class SQL implements \JsonSerializable
     /**
      * SQL constructor.
      * @param null $ORM If the ORM object is empty it will default to the global $DBA variable for a database connection
+     * @param null $DBA
      */
-    public function __construct($ORM = null)
+    public function __construct($ORM = null, $DBA = null)
     {
         if (!empty($ORM)) {
             $this->ORM = clone $ORM;
             $this->DBA = $this->ORM->DBA;
         } else {
-            //See if we can db connection from global $DBA
-            global $DBA;
             if (!empty($DBA)) {
                 $this->DBA = $DBA;
+            } else {
+                //See if we can db connection from global $DBA
+                global $DBA;
+                if (!empty($DBA)) {
+                    $this->DBA = $DBA;
+                }
             }
         }
     }
