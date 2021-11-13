@@ -57,14 +57,14 @@ interface DataBase
 
     /**
      * Fetch a result set of DataResult
-     * @param string $sql SQL Query to fetch wanted data
+     * @param string|array $sql SQL Query to fetch wanted data
      * @param int $noOfRecords Number of records wanted to return
      * @param int $offSet Row offset for fetched data
      * @param array $fieldMapping Array of mapped fields for mapping to different results
      * @return DataResult Array of query result data
      * @example examples\exampleDataBaseFetch.php
      */
-    public function fetch(string $sql = "", int $noOfRecords = 10, int $offSet = 0, array $fieldMapping = []): ?DataResult;
+    public function fetch($sql, int $noOfRecords = 10, int $offSet = 0, array $fieldMapping = []): ?DataResult;
 
     /**
      * Commits the transaction for the current database
