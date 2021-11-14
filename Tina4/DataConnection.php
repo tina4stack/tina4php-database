@@ -34,4 +34,13 @@ class DataConnection
     {
         return $this->connection;
     }
+
+    /**
+     * Get the actual resource connection
+     * @return mixed
+     */
+    final public function getDbh ()
+    {
+        return $this->connection->dbh;
+    }
 }
