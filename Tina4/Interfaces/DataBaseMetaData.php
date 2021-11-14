@@ -6,8 +6,9 @@ interface DataBaseMetaData
 {
     /**
      * Create the database metadata
+     * @param Database $connection
      */
-    public function __construct();
+    public function __construct(Database $connection);
 
     /**
      * Gets all the tables in the database
