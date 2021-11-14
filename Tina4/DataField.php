@@ -8,7 +8,7 @@
 namespace Tina4;
 
 /**
- * Datafield layout for ORM and database result set
+ * Data field layout for ORM and database result set
  * @package Tina4
  */
 class DataField
@@ -17,42 +17,65 @@ class DataField
      * @var integer Index
      */
     public $index = 0;
-/**
+
+    /**
      * @var string Name of field
      */
     public $fieldName;
-/**
+
+    /**
      * @var string Alias of field
      */
     public $fieldAlias;
-/**
+
+    /**
+     * @var string Description of the field
+     */
+    public $description;
+
+    /**
      * @var integer|string Type of data e.g. NUMERIC
      */
     public $dataType = DATA_TYPE_TEXT;
-/**
+
+    /**
      * @var integer Size of data
      */
     public $size = 0;
-/**
+
+    /**
      * @var integer Number of decimals
      */
     public $decimals = 0;
-/**
+
+    /**
      * @var integer Whether the data is aligned left or right
      */
     public $alignment = DATA_ALIGN_LEFT;
-/**
+
+    /**
+     * @var string Default value for the field
+     */
+    public $defaultValue;
+
+    /**
      * DataField constructor.
-     * @param integer $index Index
+     * @param int $index Index
      * @param string $fieldName Field name
      * @param string $fieldAlias Field alias
      * @param string $dataType Type of data e.g. NUMERIC
-     * @param integer $size Size of data
-     * @param integer $decimals Number of decimals
-     * @param integer $alignment Whether the data is aligned left (0) or right (1)
+     * @param int $size Size of data
+     * @param int $decimals Number of decimals
+     * @param int $alignment Whether the data is aligned left (0) or right (1)
      */
-    public function __construct(int $index, string $fieldName, string $fieldAlias, string $dataType, $size = 0, $decimals = 0, $alignment = DATA_ALIGN_LEFT)
-    {
+    public function __construct(int $index,
+                                string $fieldName,
+                                string $fieldAlias,
+                                string $dataType,
+                                int $size = 0,
+                                int $decimals = 0,
+                                int $alignment = DATA_ALIGN_LEFT
+    ) {
         $this->index = $index;
         $this->fieldName = $fieldName;
         $this->fieldAlias = $fieldAlias;
@@ -64,29 +87,38 @@ class DataField
 
     /**
      * Gets the field name
-     * @param string $upperCase
-     * @return string
+     * @param bool $upperCase Return field name as upper case?
+     * @return string The field name
      */
-    public function getFieldName($upperCase = false)
+    final public function getFieldName(bool $upperCase = false) : string
     {
         if ($upperCase === DATA_CASE_UPPER) {
             return strtoupper($this->fieldName);
-        } else {
-            return $this->fieldName;
         }
+
+        return $this->fieldName;
     }
 
     /**
      * Gets the field alias
-     * @param string $upperCase
-     * @return string
+     * @param bool $upperCase Return field name as upper case?
+     * @return string The field alias
      */
-    public function getFieldAlias($upperCase = false)
+    final public function getFieldAlias(bool $upperCase = false) : string
     {
         if ($upperCase === DATA_CASE_UPPER) {
             return strtoupper($this->fieldAlias);
-        } else {
-            return $this->fieldAlias;
         }
+
+        return $this->fieldAlias;
+    }
+
+    /**
+     * Gets the default value for the field
+     * @return string
+     */
+    final public function getDefaultValue(): string
+    {
+        return $this->defaultValue;
     }
 }
