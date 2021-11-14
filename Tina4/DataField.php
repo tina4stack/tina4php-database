@@ -64,6 +64,11 @@ class DataField
     public $isNotNull;
 
     /**
+     * @var $isPrimaryKey;
+     */
+    public $isPrimaryKey;
+
+    /**
      * DataField constructor.
      * @param int $index Index
      * @param string $fieldName Field name
@@ -134,5 +139,14 @@ class DataField
     final public function isNotNull(): bool
     {
         return $this->isNotNull;
+    }
+
+    /**
+     * Is the field a primary key
+     * @return bool
+     */
+    final public function isPrimaryKey(): bool
+    {
+        return $this->isPrimaryKey;
     }
 }
