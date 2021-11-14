@@ -59,6 +59,11 @@ class DataField
     public $defaultValue;
 
     /**
+     * @var bool is the field not null
+     */
+    public $isNotNull;
+
+    /**
      * DataField constructor.
      * @param int $index Index
      * @param string $fieldName Field name
@@ -120,5 +125,14 @@ class DataField
     final public function getDefaultValue(): string
     {
         return $this->defaultValue;
+    }
+
+    /**
+     * Is the field a not null field
+     * @return bool
+     */
+    final public function isNotNull(): bool
+    {
+        return $this->isNotNull;
     }
 }
