@@ -69,6 +69,11 @@ class DataField
     public $isPrimaryKey;
 
     /**
+     * @var $isForeignKey;
+     */
+    public $isForeignKey;
+
+    /**
      * DataField constructor.
      * @param int $index Index
      * @param string $fieldName Field name
@@ -148,5 +153,14 @@ class DataField
     final public function isPrimaryKey(): bool
     {
         return $this->isPrimaryKey;
+    }
+
+    /**
+     * Is the field a foreign key
+     * @return bool
+     */
+    final public function isForeignKey(): bool
+    {
+        return $this->isForeignKey;
     }
 }
