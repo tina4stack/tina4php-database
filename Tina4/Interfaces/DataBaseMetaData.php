@@ -36,4 +36,10 @@ interface DataBaseMetaData
      * @return array
      */
     public function getTableInformation(string $tableName): array;
+
+    /**
+     * Gets the complete database metadata
+     * @return array
+     */
+    public function getDatabaseMetaData(): array;
 }
