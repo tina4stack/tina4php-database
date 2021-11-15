@@ -17,5 +17,5 @@ interface DataBaseExec
      * @param $params
      * @param $tranId
      */
-    public function exec($params, $tranId): void;
+    public function exec($params, $tranId);
 }
