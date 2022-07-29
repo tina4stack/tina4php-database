@@ -36,14 +36,21 @@ class DataRecord implements JsonSerializable
         if (!empty($record)) {
             $this->original = (object)$record;
             foreach ($record as $column => $value) {
-                if ($this->isBinary($value)) {
+                $this->original->{$column} = $value;
+
+                if (is_string($value) && $this->isBinary($value)) {
                     $value = \base64_encode($value);
                     $this->original->{$column} = $value;
                 }
 
-                if ($this->isDate($value, $databaseFormat)) {
+                if (!is_object($value) && $this->isDate($value, $databaseFormat)) {
                     $value = $this->formatDate($value, $databaseFormat, $outputFormat);
                     $this->original->{$column} = $value;
+                } else {
+                    if (is_object($value) && get_class($value) === "DateTime") {
+                        $value = $value->format($outputFormat. " H:i:s");
+                        $this->original->{$column} = $value;
+                    }
                 }
 
                 $this->{$column} = $value;
