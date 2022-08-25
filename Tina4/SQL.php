@@ -148,6 +148,7 @@ class SQL implements \JsonSerializable
         } else {
             $this->excludeFields = explode(",", $fields);
         }
+
         return $this;
     }
 
@@ -173,6 +174,7 @@ class SQL implements \JsonSerializable
         $this->offset = $offset;
         $this->hasOne = $hasOne;
         $this->hasMany = $hasMany;
+
         return $this;
     }
 
@@ -183,6 +185,7 @@ class SQL implements \JsonSerializable
     final public function from(string $tableName): SQL
     {
         $this->tableName = $tableName;
+
         return $this;
     }
 
@@ -198,6 +201,7 @@ class SQL implements \JsonSerializable
             $this->nextAnd = "where";
             $this->filters[] = ["where", $filter];
         }
+
         return $this;
     }
 
@@ -218,6 +222,7 @@ class SQL implements \JsonSerializable
                 $this->filters[] = ["and", $filter];
             }
         }
+
         return $this;
     }
 
@@ -230,6 +235,7 @@ class SQL implements \JsonSerializable
     {
         //@todo parse filter
         $this->filters[] = ["or", $filter];
+
         return $this;
     }
 
@@ -242,6 +248,7 @@ class SQL implements \JsonSerializable
     {
         $this->nextAnd = "join";
         $this->join[] = ["join", $tableName];
+
         return $this;
     }
 
@@ -254,6 +261,7 @@ class SQL implements \JsonSerializable
     {
         $this->nextAnd = "join";
         $this->join[] = ["left join", $tableName];
+
         return $this;
     }
 
@@ -298,7 +306,7 @@ class SQL implements \JsonSerializable
         $result = [];
         foreach ($fields as $id => $field) {
             if (!empty($this->ORM)) {
-                $result[] = $this->ORM->getFieldName($field);
+                $result[] = $this->ORM->getFieldName($field, $this->ORM->fieldMapping);
             } else {
                 $result[] = $field;
             }
