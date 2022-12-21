@@ -13,6 +13,7 @@ namespace Tina4;
  */
 class SQL implements \JsonSerializable
 {
+    use DataUtility;
     /**
      * @var resource Database connection handle
      */
@@ -190,16 +191,45 @@ class SQL implements \JsonSerializable
     }
 
     /**
+     * Parsing the filter @todo merge with DataUtility
+     * @param $filter
+     * @param $params
+     * @return array|mixed|string|string[]|null
+     */
+    final public function parseFilter ($filter, $params) {
+        if (!empty($filter) && !empty($params)) {
+            //add params to filter
+            foreach ($params as $param) {
+                //check param for injection
+                //@todo check for SQL injection?
+                if (!$this->isDate($param, $this->DBA->getDefaultDatabaseDateFormat())) {
+                    $param = filter_var($param, FILTER_DEFAULT);
+                }
+                //check for single quotes and escape
+                $param = str_replace("'", "''", $param);
+
+                if (is_string($param)) {
+                    $filter = preg_replace('/\?/', "'{$param}'", $filter, 1);
+                } else {
+                    $filter = preg_replace('/\?/', "{$param}", $filter, 1);
+                }
+            }
+        }
+
+        return $filter;
+    }
+
+    /**
      * Filter the SQL statement
      * @param string $filter A valid SQL filter
      * @return $this
      */
-    final public function where(string $filter): SQL
+    final public function where(string $filter, $params=[]): SQL
     {
         //@todo parse filter
         if (trim($filter) !== "") {
             $this->nextAnd = "where";
-            $this->filters[] = ["where", $filter];
+            $this->filters[] = ["where", $this->parseFilter($filter, $params)];
         }
 
         return $this;
@@ -208,18 +238,19 @@ class SQL implements \JsonSerializable
     /**
      * And clause for SQL
      * @param string $filter A valid SQL and expression
+     * @param array $params
      * @return $this
      */
-    final public function and(string $filter): SQL
+    final public function and(string $filter, $params=[]): SQL
     {
         //@todo parse filter
         if (trim($filter) !== "") {
             if ($this->nextAnd === "join") {
-                $this->join[] = ["and", $filter];
+                $this->join[] = ["and", $this->parseFilter($filter, $params)];
             } elseif ($this->nextAnd === "having") {
-                $this->havings[] = ["and", $filter];
+                $this->havings[] = ["and", $this->parseFilter($filter, $params)];
             } else {
-                $this->filters[] = ["and", $filter];
+                $this->filters[] = ["and", $this->parseFilter($filter, $params)];
             }
         }
 
@@ -229,12 +260,13 @@ class SQL implements \JsonSerializable
     /**
      * Or statement for SQL
      * @param string $filter A valid or filter expression
+     * @param array $params
      * @return $this
      */
-    final public function or(string $filter): SQL
+    final public function or(string $filter, $params=[]): SQL
     {
         //@todo parse filter
-        $this->filters[] = ["or", $filter];
+        $this->filters[] = ["or", $this->parseFilter($filter, $params)];
 
         return $this;
     }
@@ -268,12 +300,13 @@ class SQL implements \JsonSerializable
     /**
      * SQL on statement
      * @param string $filter Filter for the on statement
+     * @param array $params
      * @return $this
      */
-    final public function on(string $filter): SQL
+    final public function on(string $filter, $params=[]): SQL
     {
         //@todo parse filter
-        $this->join[] = ["on", $filter];
+        $this->join[] = ["on", $this->parseFilter($filter, $params)];
 
         return $this;
     }
@@ -318,12 +351,13 @@ class SQL implements \JsonSerializable
     /**
      * Having clause
      * @param string $filter Filter for having clause
+     * @param array $params
      * @return $this
      */
-    final public function having(string $filter): SQL
+    final public function having(string $filter, $params=[]): SQL
     {
         $this->nextAnd = "having";
-        $this->havings[] = ["having", $filter];
+        $this->havings[] = ["having", $this->parseFilter($filter, $params)];
 
         return $this;
     }
