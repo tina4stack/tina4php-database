@@ -14,7 +14,7 @@ use JsonSerializable;
  * A single data record
  * @package Tina4
  */
-class DataRecord implements JsonSerializable
+class DataRecord extends \stdClass implements JsonSerializable
 {
     use DataUtility;
 

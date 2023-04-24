@@ -13,7 +13,7 @@ use JsonSerializable;
  * Result of query
  * @package Tina4
  */
-class DataResult implements JsonSerializable
+class DataResult extends \stdClass implements JsonSerializable
 {
     /**
      * @var resource Records returned from query
