@@ -406,8 +406,9 @@ class SQL implements \JsonSerializable
 
     /**
      * Makes a neat JSON response
+     * @param bool $original Returns back exactly what was returned from the database
      */
-    final public function jsonSerialize(): array
+    final public function jsonSerialize(bool $original=false): array
     {
         //run the query
         $sqlStatement = $this->generateSQLStatement();
@@ -423,8 +424,8 @@ class SQL implements \JsonSerializable
             $this->lastSQL = $sqlStatement;
             $this->error = $this->DBA->error();
 
-            if (!empty($result->records()) && $this->noOfRecords > 0) {
-                $records = $result->AsObject();
+            if (!empty($result->records($original)) && $this->noOfRecords > 0) {
+                $records = $result->AsObject($original);
 
                 if (!empty($this->ORM)) {
                     foreach ($records as $id => $record) {
@@ -545,18 +546,19 @@ class SQL implements \JsonSerializable
 
     /**
      * Gets the result as a generic array without the extra object information
+     * @param bool $original Returns back exactly what is queried
      * @return array
      */
-    final public function asArray(): array
+    final public function asArray(bool $original=false): array
     {
-        $records = $this->jsonSerialize();
+        $records = $this->jsonSerialize($original);
         if (isset($records["error"]) && !empty($records["error"])) {
             return $records;
         }
         $result = [];
         foreach ($records as $id => $record) {
             if (get_parent_class($record) === "Tina4\ORM") {
-                $result[] = $record->asArray();
+                $result[] = $record->asArray($original);
             } else {
                 $result[] = (array)$record;
             }
