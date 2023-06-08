@@ -25,7 +25,7 @@ trait DataUtility
         } else {
             $dateParts = explode(" ", $dateString);
         }
-        $d = \DateTime::createFromFormat($databaseFormat, $dateParts[0]);
+        $d = \DateTime::createFromFormat($databaseFormat, str_replace(chr(0), '', $dateParts[0]));
 
         return $d && $d->format($databaseFormat) === $dateParts[0];
     }
@@ -46,7 +46,7 @@ trait DataUtility
             if ($dateString[strlen($dateString) - 1] === "Z") {
                 $delimiter = "T";
                 $dateParts = explode($delimiter, $dateString);
-                $d = \DateTime::createFromFormat($databaseFormat, $dateParts[0]);
+                $d = \DateTime::createFromFormat($databaseFormat, str_replace(chr(0), '', $dateParts[0]));
                 if ($d) {
                     return $d->format($outputFormat) . $delimiter . $dateParts[1];
                 }
