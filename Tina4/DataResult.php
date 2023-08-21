@@ -155,9 +155,9 @@ class DataResult extends \stdClass implements JsonSerializable
         }
 
         if (!empty($results)) {
-            return json_encode((object)["recordsTotal" => $this->noOfRecords, "recordsFiltered" => count($results), "recordsOffset" => $this->offSet, "fields" => $this->fields, "data" => $results, "dataError" => null]);
+            return json_encode((object)["recordsTotal" => $this->noOfRecords, "recordsFiltered" => $this->noOfRecords, "recordCount" => count($results), "recordsOffset" => $this->offSet, "fields" => $this->fields, "data" => $results, "dataError" => null]);
         } else {
-            return json_encode((object)["recordsTotal" => 0, "recordsFiltered" => 0,  "recordsOffset" => 0, "fields" => [], "data" => [], "dataError" => $this->error->getErrorText()]);
+            return json_encode((object)["recordsTotal" => 0, "recordsFiltered" => 0, "recordCount" => 0,  "recordsOffset" => 0, "fields" => [], "data" => [], "dataError" => $this->error->getErrorText()]);
         }
     }
 
@@ -177,7 +177,7 @@ class DataResult extends \stdClass implements JsonSerializable
             }
         }
 
-        return (object)["recordsTotal" => $this->noOfRecords, "recordsFiltered" => count($results), "recordsOffset" => $this->offSet, "fields" => $this->fields, "data" => $results, "dataError" => $this->getError()];
+        return (object)["recordsTotal" => $this->noOfRecords, "recordsFiltered" => $this->noOfRecords, "recordCount" => count($results), "recordsOffset" => $this->offSet, "fields" => $this->fields, "data" => $results, "dataError" => $this->getError()];
     }
 
     /**
