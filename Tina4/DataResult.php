@@ -27,6 +27,17 @@ class DataResult extends \stdClass implements JsonSerializable
      * @var integer Number of records
      */
     public $noOfRecords;
+
+    /**
+     * @var integer Number of records (filtered by where statement)
+     */
+    public $recordsFiltered;
+
+    /**
+     * @var integer Count of records returned (Pagination)
+     */
+    public $recordCount;
+
     /**
      * @var integer Data row offset
      */
@@ -48,6 +59,8 @@ class DataResult extends \stdClass implements JsonSerializable
         $this->records = $records;
         $this->fields = $fields;
         $this->noOfRecords = $noOfRecords;
+        $this->recordCount = count($this->records);
+        $this->recordsFiltered = $noOfRecords;
         $this->offSet = $offSet;
         $this->error = $error;
     }
@@ -155,7 +168,7 @@ class DataResult extends \stdClass implements JsonSerializable
         }
 
         if (!empty($results)) {
-            return json_encode((object)["recordsTotal" => $this->noOfRecords, "recordsFiltered" => $this->noOfRecords, "recordCount" => count($results), "recordsOffset" => $this->offSet, "fields" => $this->fields, "data" => $results, "dataError" => null]);
+            return json_encode((object)["recordsTotal" => $this->noOfRecords, "recordsFiltered" => $this->recordsFiltered, "recordCount" => $this->recordCount, "recordsOffset" => $this->offSet, "fields" => $this->fields, "data" => $results, "dataError" => null]);
         } else {
             return json_encode((object)["recordsTotal" => 0, "recordsFiltered" => 0, "recordCount" => 0,  "recordsOffset" => 0, "fields" => [], "data" => [], "dataError" => $this->error->getErrorText()]);
         }
@@ -177,7 +190,7 @@ class DataResult extends \stdClass implements JsonSerializable
             }
         }
 
-        return (object)["recordsTotal" => $this->noOfRecords, "recordsFiltered" => $this->noOfRecords, "recordCount" => count($results), "recordsOffset" => $this->offSet, "fields" => $this->fields, "data" => $results, "dataError" => $this->getError()];
+        return (object)["recordsTotal" => $this->noOfRecords, "recordsFiltered" => $this->recordsFiltered, "recordCount" => $this->recordCount, "recordsOffset" => $this->offSet, "fields" => $this->fields, "data" => $results, "dataError" => $this->getError()];
     }
 
     /**
