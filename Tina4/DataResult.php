@@ -59,7 +59,11 @@ class DataResult extends \stdClass implements JsonSerializable
         $this->records = $records;
         $this->fields = $fields;
         $this->noOfRecords = $noOfRecords;
-        $this->recordCount = count($this->records);
+        if (is_array($records)) {
+            $this->recordCount = count($this->records);
+        } else {
+            $this->recordCount = 0;
+        }
         $this->recordsFiltered = $noOfRecords;
         $this->offSet = $offSet;
         $this->error = $error;
