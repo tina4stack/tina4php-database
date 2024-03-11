@@ -24,6 +24,11 @@ trait DataBaseCore
     public $databaseName;
 
     /**
+     * @var string $connectionString Connection string for NOSQL database types
+     */
+    public $connectionString;
+
+    /**
      * @var integer $port Port number of database
      */
     public $port; //Declare in the implementation
@@ -69,6 +74,7 @@ trait DataBaseCore
      * @param string|null $username Database user username
      * @param string|null $password Database user password
      * @param string $dateFormat Format of date
+     * @throws \Exception
      */
     public function __construct(?string $database, ?string $username = "", ?string $password = "", string $dateFormat = "Y-m-d")
     {
@@ -78,6 +84,7 @@ trait DataBaseCore
             $this->cache = $cache;
         }
 
+        $this->connectionString = $database; //Used for NOSQL type database engines
         $this->username = $username;
         $this->password = $password;
 
