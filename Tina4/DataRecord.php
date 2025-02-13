@@ -173,7 +173,7 @@ class DataRecord extends \stdClass implements JsonSerializable
      * @param string $name Name of the data column
      * @return null|value Value of the named column
      */
-    final public function byName(string $name): ?bool
+    final public function byName(string $name)
     {
         $columnName = strtoupper($name);
         if (!empty($this->original) && !empty($this->$columnName)) {
@@ -181,6 +181,18 @@ class DataRecord extends \stdClass implements JsonSerializable
         }
 
         return null;
+    }
+
+    /**
+     * Use to set a value to Data record at runtime
+     * @param $columnName
+     * @param $value
+     * @return void
+     */
+    function set($columnName, $value) : void
+    {
+        $this->original->$columnName = $value;
+        $this->$columnName = $value;
     }
 
     /**
