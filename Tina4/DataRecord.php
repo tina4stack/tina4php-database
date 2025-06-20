@@ -28,7 +28,7 @@ class DataRecord extends \stdClass implements JsonSerializable
      * @param string $databaseFormat Input format use the PHP date format conventions
      * @param string $outputFormat Output date format - use the PHP date format conventions
      */
-    public function __construct(array $record = null, array $fieldMapping = [], string $databaseFormat = "Y-m-d", string $outputFormat = "Y-m-d")
+    public function __construct(?array $record = null, array $fieldMapping = [], string $databaseFormat = "Y-m-d", string $outputFormat = "Y-m-d")
     {
         if (!empty($fieldMapping)) {
             $this->fieldMapping = $fieldMapping;
