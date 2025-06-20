@@ -54,7 +54,7 @@ class DataResult extends \stdClass implements JsonSerializable
      * @param integer $offSet Which row to start recording
      * @param DataError|null $error Database error
      */
-    public function __construct($records, $fields, $noOfRecords, $offSet = 0, DataError $error = null)
+    public function __construct($records, $fields, $noOfRecords, $offSet = 0, ?DataError $error = null)
     {
         $this->records = $records;
         $this->fields = $fields;
