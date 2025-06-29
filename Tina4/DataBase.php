@@ -61,7 +61,7 @@ interface DataBase
      * @param int $noOfRecords Number of records wanted to return
      * @param int $offSet Row offset for fetched data
      * @param array $fieldMapping Array of mapped fields for mapping to different results
-     * @return DataResult Array of query result data
+     * @return DataResult|null Array of query result data
      * @example examples\exampleDataBaseFetch.php
      */
     public function fetch($sql, int $noOfRecords = 10, int $offSet = 0, array $fieldMapping = []): ?DataResult;

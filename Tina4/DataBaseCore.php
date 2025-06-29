@@ -21,42 +21,42 @@ trait DataBaseCore
     /**
      * @var string $databaseName Name of database
      */
-    public $databaseName;
+    public string $databaseName;
 
     /**
      * @var string $connectionString Connection string for NOSQL database types
      */
-    public $connectionString;
+    public string $connectionString;
 
     /**
-     * @var integer $port Port number of database
+     * @var mixed $port Port number of database
      */
-    public $port; //Declare in the implementation
+    public mixed $port; //Declare in the implementation
 
     /**
      * @var string $hostName Name of host
      */
-    public $hostName;
+    public string $hostName;
 
     /**
      * @var string $username Username of user for database
      */
-    public $username;
+    public string $username;
 
     /**
      * @var string $password Password of user for database
      */
-    public $password;
+    public string $password;
 
     /**
      * @var string $dateFormat Format of dates
      */
-    public $dateFormat;
+    public string $dateFormat;
 
     /**
      * @var integer $fetchLimit Limit an sql result set
      */
-    public $fetchLimit = 100;
+    public int $fetchLimit = 100;
 
     /**
      * @var xcache
@@ -64,9 +64,19 @@ trait DataBaseCore
     public $cache;
 
     /**
-     * @var
+     * @var mixed
      */
-    public $transaction;
+    public mixed $transaction;
+
+    /**
+     * @var string Used in databases where the charset can be set
+     */
+    public string $charset;
+
+    /**
+     * @var string Used in MySQL currently, required absolute path
+     */
+    public string $certificateFile;
 
     /**
      * DataBase constructor.
@@ -76,7 +86,7 @@ trait DataBaseCore
      * @param string $dateFormat Format of date
      * @throws \Exception
      */
-    public function __construct(?string $database, ?string $username = "", ?string $password = "", string $dateFormat = "Y-m-d")
+    public function __construct(?string $database, ?string $username = "", ?string $password = "", string $dateFormat = "Y-m-d", string $charset = "utf8mb4", string $certificateFile="system.crt")
     {
         global $cache;
 
@@ -107,6 +117,8 @@ trait DataBaseCore
         }
         //Set the date format we want date results to display in
         $this->dateFormat = $dateFormat;
+        $this->charset = $charset;
+        $this->certificateFile = $certificateFile;
         $this->open();
     }
 
