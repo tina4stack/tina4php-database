@@ -20,8 +20,10 @@ interface DataBase
      * @param string $username Database user username
      * @param string $password Database user password
      * @param string $dateFormat Format of date
+     * @param string $charset The charset used in the database
+     * @param string $certificateFile An absolute path to a cert file used in SSL connections where supported
      */
-    public function __construct(string $database, string $username = "", string $password = "", string $dateFormat = "Y-m-d");
+    public function __construct(string $database, string $username = "", string $password = "", string $dateFormat = "Y-m-d", string $charset = "utf8", string $certificateFile="");
 
 
     /**
