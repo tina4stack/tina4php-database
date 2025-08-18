@@ -52,20 +52,33 @@ trait DataUtility
      */
     public function isIsoDate(string $dateString): bool
     {
-        // Attempt to create DateTime object from ISO8601 format
-        $date = \DateTime::createFromFormat(DateTimeInterface::ATOM, $dateString);
+        // Handle milliseconds by checking for their presence
+        $format = \DateTimeInterface::ATOM; // Y-m-d\TH:i:sP
+        if (preg_match('/\.\d{3}/', $dateString)) {
+            // If milliseconds are present, adjust the format
+            $format = 'Y-m-d\TH:i:s.vP';
+        }
+
+        // Attempt to parse the date string
+        $date = \DateTime::createFromFormat($format, $dateString);
 
         // Check if parsing was successful
         if ($date === false) {
+
             return false;
         }
 
-        // Reformat parsed date to ISO8601 and compare to handle variations (e.g., 'Z' vs '+00:00')
-        $formatted = $date->format(DateTimeInterface::ATOM);
+        // Reformat parsed date and compare to handle variations (e.g., 'Z' vs '+00:00')
+        $formatted = $date->format($format);
         $normalizedInput = str_replace('Z', '+00:00', $dateString);
 
         // Check if the input matches the parsed and reformatted date
-        return $formatted === $normalizedInput;
+        if ($formatted !== $normalizedInput) {
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
