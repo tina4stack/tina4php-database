@@ -20,8 +20,10 @@ interface DataBase
      * @param string $username Database user username
      * @param string $password Database user password
      * @param string $dateFormat Format of date
+     * @param string $charset The charset used in the database
+     * @param string $certificateFile An absolute path to a cert file used in SSL connections where supported
      */
-    public function __construct(string $database, string $username = "", string $password = "", string $dateFormat = "Y-m-d");
+    public function __construct(string $database, string $username = "", string $password = "", string $dateFormat = "Y-m-d", string $charset = "utf8", string $certificateFile="");
 
 
     /**
@@ -61,7 +63,7 @@ interface DataBase
      * @param int $noOfRecords Number of records wanted to return
      * @param int $offSet Row offset for fetched data
      * @param array $fieldMapping Array of mapped fields for mapping to different results
-     * @return DataResult Array of query result data
+     * @return DataResult|null Array of query result data
      * @example examples\exampleDataBaseFetch.php
      */
     public function fetch($sql, int $noOfRecords = 10, int $offSet = 0, array $fieldMapping = []): ?DataResult;
