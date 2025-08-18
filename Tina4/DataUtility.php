@@ -2,8 +2,72 @@
 
 namespace Tina4;
 
+use DateTimeInterface;
+
 trait DataUtility
 {
+
+    /**
+     * Validates and converts an ISO8601 date string to YYYY-MM-DD HH:MM:SS format
+     * @param string $isoDate The ISO8601 date string (e.g., '2025-04-08T13:49:40')
+     * @return string|null The formatted date (e.g., '2025-04-08 13:49:40') or null if invalid
+     */
+    public function isoToNormalDate(string $isoDate): ?string
+    {
+        // Attempt to parse ISO8601 date
+        $date = \DateTime::createFromFormat(\DateTimeInterface::ATOM, $isoDate);
+
+        // Check if parsing was successful
+        if ($date === false) {
+            return null;
+        }
+
+        // Reformat to YYYY-MM-DD HH:MM:SS
+        return $date->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Validates and converts a YYYY-MM-DD HH:MM:SS date string to ISO8601 format
+     * @param string $normalDate The date string (e.g., '2025-04-08 13:49:40')
+     * @return string|null The ISO8601 date (e.g., '2025-04-08T13:49:40+00:00') or null if invalid
+     */
+    public function normalToIsoDate(string $normalDate): ?string
+    {
+        // Attempt to parse YYYY-MM-DD HH:MM:SS date
+        $date = \DateTime::createFromFormat('Y-m-d H:i:s', $normalDate);
+
+        // Check if parsing was successful
+        if ($date === false) {
+            return null;
+        }
+
+        // Reformat to ISO8601 (ATOM format)
+        return $date->format(\DateTimeInterface::ATOM);
+    }
+
+    /**
+     * Checks if the string is a valid date in ISO8601 format
+     * @param string $dateString
+     * @return bool
+     */
+    public function isIsoDate(string $dateString): bool
+    {
+        // Attempt to create DateTime object from ISO8601 format
+        $date = \DateTime::createFromFormat(DateTimeInterface::ATOM, $dateString);
+
+        // Check if parsing was successful
+        if ($date === false) {
+            return false;
+        }
+
+        // Reformat parsed date to ISO8601 and compare to handle variations (e.g., 'Z' vs '+00:00')
+        $formatted = $date->format(DateTimeInterface::ATOM);
+        $normalizedInput = str_replace('Z', '+00:00', $dateString);
+
+        // Check if the input matches the parsed and reformatted date
+        return $formatted === $normalizedInput;
+    }
+
     /**
      * Makes sure the field is a date field and formats the data accordingly
      * @param string|null $dateString
@@ -12,8 +76,7 @@ trait DataUtility
      */
     public function isDate(?string $dateString, string $databaseFormat): bool
     {
-        if ($dateString === null)
-        {
+        if ($dateString === null) {
             return false;
         }
 
