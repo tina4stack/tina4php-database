@@ -12,8 +12,11 @@ trait DataUtility
      * @param string $isoDate The ISO8601 date string (e.g., '2025-04-08T13:49:40')
      * @return string|null The formatted date (e.g., '2025-04-08 13:49:40') or null if invalid
      */
-    public function isoToNormalDate(string $isoDate, $dateFormat="Y-m-d H:i:s"): ?string
+    public function isoToNormalDate(string $isoDate, string $dateFormat = "Y-m-d H:i:s"): ?string
     {
+        // Remove milliseconds if present
+        $isoDate = preg_replace('/\.\d{3}/', '', $isoDate);
+
         // Attempt to parse ISO8601 date
         $date = \DateTime::createFromFormat(\DateTimeInterface::ATOM, $isoDate);
 
@@ -22,7 +25,7 @@ trait DataUtility
             return null;
         }
 
-        // Reformat to YYYY-MM-DD HH:MM:SS
+        // Reformat to specified format
         return $date->format($dateFormat);
     }
 

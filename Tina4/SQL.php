@@ -397,11 +397,12 @@ class SQL implements \JsonSerializable
 
     /**
      * Gets an array of objects
-     * @return array|mixed
+     * @param bool $original Returns back exactly what was returned from the database
+     * @return array
      */
-    final public function asObject(): array
+    final public function asObject(bool $original=false): array
     {
-        return $this->jsonSerialize();
+        return $this->jsonSerialize($original);
     }
 
     /**
@@ -569,9 +570,10 @@ class SQL implements \JsonSerializable
 
     /**
      * Gets the records as a result
-     * @return mixed
+     * @param bool $original
+     * @return object|null
      */
-    final public function asResult(): ?object
+    final public function asResult(bool $original=false): ?object
     {
         $records = $this->jsonSerialize();
         //error_log (print_r ($this->error,1));
