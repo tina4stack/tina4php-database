@@ -145,11 +145,12 @@ trait DataBaseCore
     /**
      * Returns back only the first element of a result which can then be used as is or serialized to array or object
      * @param string $sql
+     * @param int $offset
      * @return mixed
      */
-    final public function fetchOne(string $sql)
+    final public function fetchOne(string $sql, int $offset=0)
     {
-        $records = $this->fetch($sql)->records;
+        $records = $this->fetch($sql, 1, $offset)->records;
         if (is_array($records) && count($records) > 0) {
             return $records[0];
         } else {
