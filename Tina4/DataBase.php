@@ -141,4 +141,10 @@ interface DataBase
      * @return string
      */
     public function getShortName() : string;
+
+    /**
+     * Whether this database supports the RETURNING clause on INSERT statements
+     * @return bool
+     */
+    public function supportsReturning(): bool;
 }

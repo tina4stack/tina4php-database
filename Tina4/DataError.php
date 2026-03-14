@@ -68,4 +68,14 @@ class DataError
     {
         return $this->errorMessage;
     }
+
+    /**
+     * Determines if the error state represents a successful operation
+     * @return bool
+     */
+    public function isSuccess(): bool
+    {
+        return $this->errorCode === 0 || $this->errorCode === "" ||
+               in_array(strtolower($this->errorMessage), ["none", "no more rows available", "unknown error", "not an error", ""]);
+    }
 }

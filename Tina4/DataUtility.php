@@ -158,15 +158,21 @@ trait DataUtility
 
     /**
      * This tests a string result from the DB to see if it is binary or not so it gets base64 encoded on the result
+     * Delegates to the canonical implementation in \Tina4\Utilities (tina4php-core) when available
      * @param string|null $string $string Data to be checked to see if it is binary data like images
      * @return bool True if the string is binary
+     * @see \Tina4\Utility::isBinary()
      * @tests tina4
      *
      *   assert(null) === false,"Check if binary returns false"
      */
     public function isBinary(?string $string): bool
     {
-        //immediately return back binary if we can get an image size
+        if (class_exists('\Tina4\Utilities')) {
+            return (new \Tina4\Utilities())->isBinary($string);
+        }
+
+        // Fallback for standalone usage without tina4php-core
         if ($string === null || is_numeric($string) || empty($string)) {
             return false;
         }

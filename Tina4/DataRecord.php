@@ -95,9 +95,12 @@ class DataRecord extends \stdClass implements JsonSerializable
 
     /**
      * Gets a proper object name for returning back data
+     * Uses the canonical camelCase() from \Tina4\Utility when the name contains underscores,
+     * otherwise applies snake_case conversion for uppercase/mixed-case names.
      * @param string $name Improper object name
      * @param array|null $fieldMapping Field mapping to map fields
      * @return string Proper object name
+     * @see \Tina4\Utility::camelCase()
      */
     final public function getObjectName(string $name, ?array $fieldMapping = []): string
     {
@@ -110,28 +113,40 @@ class DataRecord extends \stdClass implements JsonSerializable
             return $fieldMapping[$name];
         }
 
-        $fieldName = "";
         if (strpos($name, "_") !== false) {
+            // Delegate to canonical camelCase implementation
+            if (class_exists('\Tina4\Utilities')) {
+                return (new \Tina4\Utilities())->camelCase($name);
+            }
+
+            // Fallback for standalone usage without tina4php-core
+            $fieldName = "";
             $name = strtolower($name);
             for ($i = 0, $iMax = strlen($name); $i < $iMax; $i++) {
                 if ($name[$i] === "_") {
                     $i++;
-                    $fieldName .= strtoupper($name[$i]);
+                    if ($i < $iMax) {
+                        $fieldName .= strtoupper($name[$i]);
+                    }
                 } else {
                     $fieldName .= $name[$i];
                 }
             }
-        } else {
-            //We have a field which is all uppercase
-            if (strtoupper($name) === $name || strtolower($name) === $name) {
-                return strtolower($name);
-            }
-            for ($i = 0, $iMax = strlen($name); $i < $iMax; $i++) {
-                if ($name[$i] !== strtolower($name[$i])) {
-                    $fieldName .= "_" . strtolower($name[$i]);
-                } else {
-                    $fieldName .= $name[$i];
-                }
+            return $fieldName;
+        }
+
+        // Handle names without underscores: convert to snake_case if mixed case,
+        // or return lowercase if all upper/lower
+        if (strtoupper($name) === $name || strtolower($name) === $name) {
+            return strtolower($name);
+        }
+
+        $fieldName = "";
+        for ($i = 0, $iMax = strlen($name); $i < $iMax; $i++) {
+            if ($name[$i] !== strtolower($name[$i])) {
+                $fieldName .= "_" . strtolower($name[$i]);
+            } else {
+                $fieldName .= $name[$i];
             }
         }
 

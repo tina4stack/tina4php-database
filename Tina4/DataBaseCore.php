@@ -188,4 +188,13 @@ trait DataBaseCore
     {
         return $this->exec(func_get_args());
     }
+
+    /**
+     * Whether this database supports the RETURNING clause on INSERT statements
+     * @return bool
+     */
+    public function supportsReturning(): bool
+    {
+        return false;
+    }
 }
