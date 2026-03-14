@@ -14,6 +14,7 @@ namespace Tina4;
 interface DataBase
 {
 
+
     /**
      * DataBase constructor.
      * @param string $database - In the form [host/port:database]

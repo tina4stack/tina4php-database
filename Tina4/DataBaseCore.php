@@ -182,4 +182,10 @@ trait DataBaseCore
     {
         return (new SQL(null, $this))->select($fields, $limit, $offset, $hasOne, $hasMany);
     }
+
+
+    final public function execute () : mixed
+    {
+        return $this->exec(func_get_args());
+    }
 }

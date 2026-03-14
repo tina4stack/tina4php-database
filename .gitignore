@@ -44,3 +44,5 @@
 /phpmetrics/violations.html
 /tests/junit.xml
 /phpmetrics/
+.phpunit.cache
+.claude/

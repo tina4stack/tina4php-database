@@ -4,19 +4,7 @@
   "license": "MIT",
   "autoload": {
     "files": [
-      "Tina4/constants.php",
-      "Tina4/DataBase.php",
-      "Tina4/DataBaseMetaData.php",
-      "Tina4/DataBaseCore.php",
-      "Tina4/DataBaseQuery.php",
-      "Tina4/DataError.php",
-      "Tina4/DataField.php",
-      "Tina4/DataRecord.php",
-      "Tina4/DataResult.php",
-      "Tina4/SQL.php"
-    ],
-    "classmap": [
-      "Tina4/"
+      "Tina4/constants.php"
     ],
     "psr-4": {
       "Tina4\\": [
@@ -38,6 +26,7 @@
     "process-timeout": 0
   },
   "require": {
+        "php": ">=8.1",
     "ext-json": "*",
     "tina4stack/tina4php-debug": "^2.0"
   }

@@ -38,6 +38,9 @@ class NoSQLParser
 
         $withOrderBy = '/(select)(.*)(from)(.*)(where)(.*)(order\ by)(.*)/m';
 
+        $delete = '/(delete from)(.*)(where)(.*)/m';
+        $deletePlain = '/(delete from)(.*)/m';
+
         if (stripos($sql, "create table") !== false) {
             preg_match_all($create, $sql, $matches, PREG_SET_ORDER, 0);
         } else
@@ -46,20 +49,29 @@ class NoSQLParser
             } else
                 if (stripos($sql, "update") !== false) {
                     preg_match_all($update, $sql, $matches, PREG_SET_ORDER, 0);
-                }
-                else
-                    if (stripos($sql, "where") === false) {
-                        preg_match_all($plain, $sql, $matches, PREG_SET_ORDER, 0);
+                } else
+                    if (stripos($sql, "delete") !== false) {
+                        if (stripos($sql, "where") !== false) {
+                            preg_match_all($delete, $sql, $matches, PREG_SET_ORDER, 0);
+                        } else {
+                            preg_match_all($deletePlain, $sql, $matches, PREG_SET_ORDER, 0);
+                        }
                     }
                     else
-                        if (stripos($sql, "order by") !== false) {
-                            preg_match_all($withOrderBy, $sql, $matches, PREG_SET_ORDER, 0);
-                        } else {
-                            preg_match_all($normal, $sql, $matches, PREG_SET_ORDER, 0);
+                        if (stripos($sql, "where") === false) {
+                            preg_match_all($plain, $sql, $matches, PREG_SET_ORDER, 0);
                         }
+                        else
+                            if (stripos($sql, "order by") !== false) {
+                                preg_match_all($withOrderBy, $sql, $matches, PREG_SET_ORDER, 0);
+                            } else {
+                                preg_match_all($normal, $sql, $matches, PREG_SET_ORDER, 0);
+                            }
 
         $data = [];
         $columns = [];
+        $filter = "";
+        $collectionName = "";
 
         if (stripos($sql, "create table") !== false) {
             $tempColumns = explode(",", trim($matches[0][2]));
@@ -73,8 +85,6 @@ class NoSQLParser
                 $part = explode(" ", trim($column));
                 array_push($columns, trim($part[0]));
             }
-
-            $filter = "";
         }
         else
             if (stripos($sql, "insert") !== false) {
@@ -94,42 +104,48 @@ class NoSQLParser
                     array_push($data, $dataValue);
                 }
 
-                $filter = "";
-
                 $collectionName = trim($matches[0][2]);
             }
             else
-                if (stripos($sql, "update") === false) {
-                    $tempColumns = explode(",", trim($matches[0][2]));
-
-                    foreach ($tempColumns as $id => $column) {
-                        $part = explode("as", trim($column));
-
-                        array_push($columns, trim($part[0]));
-                    }
-
-                    $collectionName = trim($matches[0][4]);
-
-                    $filter = "";
-
-                    if (count($matches[0]) > 6) {
-                        $filter = $matches[0][6];
-                    }
-                } else {
-                    $tempColumns = explode(",", trim($matches[0][4]));
-
-                    foreach ($tempColumns as $id => $column) {
-                        $part = explode("=", $column);
-
-                        array_push($columns, trim($part[0]));
-                    }
-
+                if (stripos($sql, "delete") !== false) {
+                    // DELETE FROM collectionName [WHERE ...]
                     $collectionName = trim($matches[0][2]);
-
-                    if (count($matches[0]) > 6) {
-                        $filter = $matches[0][6];
+                    if (count($matches[0]) > 4) {
+                        $filter = $matches[0][4];
                     }
                 }
+                else
+                    if (stripos($sql, "update") !== false) {
+                        $tempColumns = explode(",", trim($matches[0][4]));
+
+                        foreach ($tempColumns as $id => $column) {
+                            $part = explode("=", $column);
+
+                            array_push($columns, trim($part[0]));
+                        }
+
+                        $collectionName = trim($matches[0][2]);
+
+                        if (count($matches[0]) > 6) {
+                            $filter = $matches[0][6];
+                        }
+                    }
+                    else {
+                        // SELECT queries
+                        $tempColumns = explode(",", trim($matches[0][2]));
+
+                        foreach ($tempColumns as $id => $column) {
+                            $part = explode("as", trim($column));
+
+                            array_push($columns, trim($part[0]));
+                        }
+
+                        $collectionName = trim($matches[0][4]);
+
+                        if (count($matches[0]) > 6) {
+                            $filter = $matches[0][6];
+                        }
+                    }
 
         $filters = [];
         //extract each of the operators
@@ -146,12 +162,12 @@ class NoSQLParser
                 if (array_key_exists($expression, $logicalOperators)) {
                     if (!empty($lastOperator)) {
                         $tempArray[2] = str_replace("'", "", $tempArray[2]);
-                        if (in_array($tempArray[1], $comparisonOperators)) {
+                        if (array_key_exists($tempArray[1], $comparisonOperators)) {
                             $filters[$lastOperator][$tempArray[0]][$comparisonOperators[$tempArray[1]]] = is_numeric(trim($tempArray[2]) * 1.00) ? trim($tempArray[2]) * 1.00 : trim($tempArray[2]);
                         }
                     } else {
                         $tempArray[2] = str_replace("'", "", $tempArray[2]);
-                        if (in_array($tempArray[1], $comparisonOperators)) {
+                        if (array_key_exists($tempArray[1], $comparisonOperators)) {
                             $filters[$tempArray[0]][$comparisonOperators[$tempArray[1]]] = is_numeric(trim($tempArray[2]) * 1.00) ? trim($tempArray[2]) * 1.00 : trim($tempArray[2]);
                         }
                     }
@@ -166,13 +182,13 @@ class NoSQLParser
                 if (!empty($lastOperator)) {
                     $tempArray[2] = str_replace("'", "", $tempArray[2]);
 
-                    if (in_array($tempArray[1], $comparisonOperators)) {
+                    if (array_key_exists($tempArray[1], $comparisonOperators)) {
                         $filters[$lastOperator][$tempArray[0]][$comparisonOperators[$tempArray[1]]] = is_numeric(trim($tempArray[2]) * 1.00) ? trim($tempArray[2]) * 1.00 : trim($tempArray[2]);
                     }
                 } else {
                     $tempArray[2] = str_replace("'", "", $tempArray[2]);
 
-                    if (in_array($tempArray[1], $comparisonOperators)) {
+                    if (array_key_exists($tempArray[1], $comparisonOperators)) {
                         $filters[$tempArray[0]][$comparisonOperators[$tempArray[1]]] = is_numeric(trim($tempArray[2]) * 1.00) ? trim($tempArray[2]) * 1.00 : trim($tempArray[2]);
                     }
                 }
