@@ -104,11 +104,17 @@ trait DataUtility
         if (is_array($dateString) || is_object($dateString)) {
             return false;
         }
+        
         if (substr($dateString, -1, 1) === "Z") {
             $dateParts = explode("T", $dateString);
         } else {
             $dateParts = explode(" ", $dateString);
         }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:\.\d+)?[+-]\d{2}(?::?\d{2})?$/', $dateString)) {
+            return true;
+        }
+        
         $d = \DateTime::createFromFormat($databaseFormat, str_replace(chr(0), '', $dateParts[0]));
 
         return $d && $d->format($databaseFormat) === $dateParts[0];
@@ -137,6 +143,19 @@ trait DataUtility
                 return null;
             }
 
+            if (preg_match('/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})(?:\.\d+)?([+-]\d{2}(?::?\d{2})?)$/', $dateString, $matches)) {
+                $basePart = $matches[1];
+                $offset   = str_replace(':', '', $matches[2]);
+                if (strlen($offset) === 3) {
+                    $offset .= '00';
+                }
+                $d = \DateTime::createFromFormat('Y-m-d H:i:sO', $basePart . $offset);
+                if ($d) {
+                    return $d->format($outputFormat);
+                }
+                return null;
+            }
+            
             if (strpos($dateString, ":") !== false) {
                 $databaseFormat .= " H:i:s";
                 if (strpos($outputFormat, "T")) {
